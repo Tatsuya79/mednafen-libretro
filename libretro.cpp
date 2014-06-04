@@ -106,11 +106,11 @@ static bool is_pal = false;
 #define MEDNAFEN_CORE_TIMING_FPS 59.82
 #define MEDNAFEN_CORE_GEOMETRY_BASE_W (game->nominal_width)
 #define MEDNAFEN_CORE_GEOMETRY_BASE_H (game->nominal_height)
-#define MEDNAFEN_CORE_GEOMETRY_MAX_W 512
+#define MEDNAFEN_CORE_GEOMETRY_MAX_W 682
 #define MEDNAFEN_CORE_GEOMETRY_MAX_H 240
-#define MEDNAFEN_CORE_GEOMETRY_ASPECT_RATIO (4.0 / 3.0)
-#define FB_WIDTH 512
-#define FB_HEIGHT 240
+#define MEDNAFEN_CORE_GEOMETRY_ASPECT_RATIO (6.0 / 5.0)
+#define FB_WIDTH 682
+#define FB_HEIGHT 243
 
 #elif defined(WANT_WSWAN_EMU)
 #define MEDNAFEN_CORE_NAME_MODULE "wswan"
@@ -479,25 +479,25 @@ static void check_variables(void)
          setting_pce_fast_nospritelimit = 1;
    }
 
-   var.key = "pce_keepaspect";
+//   var.key = "pce_keepaspect";
 
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
-   {
-      if (strcmp(var.value, "disabled") == 0)
-      {
+//   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+//   {
+//      if (strcmp(var.value, "disabled") == 0)
+//      {
          setting_pce_keepaspect = 0;
-         game->fb_width = 512;
+         game->fb_width = 682;
          game->nominal_width = 341;
          game->lcm_width = 341;
-      }
-      else if (strcmp(var.value, "enabled") == 0)
-      {
-         setting_pce_keepaspect = 1;
-         game->fb_width = 682;
-         game->nominal_width = 288;
-         game->lcm_width = 1024;
-      }
-   }
+//      }
+//      else if (strcmp(var.value, "enabled") == 0)
+//      {
+//         setting_pce_keepaspect = 1;
+//         game->fb_width = 682;
+//         game->nominal_width = 288;
+//         game->lcm_width = 1024;
+//      }
+//   }
 
    bool do_cdsettings = false;
    var.key = "pce_cddavolume";
@@ -1310,10 +1310,27 @@ void retro_run()
 
 #if defined(WANT_32BPP)
    const uint32_t *pix = surf->pixels;
-   video_cb(pix, width, height, FB_WIDTH << 2);
 #elif defined(WANT_16BPP)
    const uint16_t *pix = surf->pixels16;
-   video_cb(pix, width, height, FB_WIDTH << 1);
+#endif
+#if defined(WANT_PCE_FAST_EMU)
+   struct retro_variable var = {0};
+   var.key = "pce_scanlinestart";
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      pix += (atoi(var.value) * surf->pitchinpix);
+      height -= atoi(var.value);
+   }
+   var.key = "pce_scanlineend";
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+   {
+      height -= (243 - atoi(var.value)); //magic
+   }
+#endif
+#if defined(WANT_32BPP)
+    video_cb(pix, width, height, FB_WIDTH << 2);
+#elif defined(WANT_16BPP)
+    video_cb(pix, width, height, FB_WIDTH << 1);
 #endif
 #endif
 
@@ -1461,7 +1478,9 @@ void retro_set_environment(retro_environment_t cb)
 #if defined(WANT_PCE_FAST_EMU)
    static const struct retro_variable vars[] = {
       { "pce_nospritelimit", "No Sprite Limit; disabled|enabled" },
-      { "pce_keepaspect", "Keep Aspect; enabled|disabled" },
+//      { "pce_keepaspect", "Keep Aspect; enabled|disabled" },
+      { "pce_scanlinestart", "Scanline Start; 3|4|5|6|7|8|9|10|11|12|13|14|15|16|0|1|2" },     
+      { "pce_scanlineend", "Scanline End; 235|236|237|238|239|240|241|242|224|225|226|227|228|229|230|231|232|233|234" },
       { "pce_cddavolume", "(CD) CDDA Volume; 0|10|20|30|40|50|60|70|80|90|100" },
       { "pce_adpcmvolume", "(CD) ADPCM Volume; 0|10|20|30|40|50|60|70|80|90|100" },
       { "pce_cdpsgvolume", "(CD) CD PSG Volume; 0|10|20|30|40|50|60|70|80|90|100" },
