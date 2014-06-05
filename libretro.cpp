@@ -1479,8 +1479,8 @@ void retro_set_environment(retro_environment_t cb)
    static const struct retro_variable vars[] = {
       { "pce_nospritelimit", "No Sprite Limit; disabled|enabled" },
 //      { "pce_keepaspect", "Keep Aspect; enabled|disabled" },
-      { "pce_scanlinestart", "Scanline Start; 3|4|5|6|7|8|9|10|11|12|13|14|15|16|0|1|2" },     
-      { "pce_scanlineend", "Scanline End; 235|236|237|238|239|240|241|242|224|225|226|227|228|229|230|231|232|233|234" },
+      { "pce_scanlinestart", "Scanline Start; 12|13|14|15|16|0|1|2|3|4|5|6|7|8|9|10|11" },     
+      { "pce_scanlineend", "Scanline End; 234|235|236|237|238|239|240|241|242|224|225|226|227|228|229|230|231|232|233" },
       { "pce_cddavolume", "(CD) CDDA Volume; 0|10|20|30|40|50|60|70|80|90|100" },
       { "pce_adpcmvolume", "(CD) ADPCM Volume; 0|10|20|30|40|50|60|70|80|90|100" },
       { "pce_cdpsgvolume", "(CD) CD PSG Volume; 0|10|20|30|40|50|60|70|80|90|100" },
