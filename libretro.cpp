@@ -110,7 +110,7 @@ static bool is_pal = false;
 #define MEDNAFEN_CORE_GEOMETRY_MAX_H 240
 #define MEDNAFEN_CORE_GEOMETRY_ASPECT_RATIO (6.0 / 5.0)
 #define FB_WIDTH 682
-#define FB_HEIGHT 243
+#define FB_HEIGHT 240
 
 #elif defined(WANT_WSWAN_EMU)
 #define MEDNAFEN_CORE_NAME_MODULE "wswan"
@@ -1324,7 +1324,7 @@ void retro_run()
    var.key = "pce_scanlineend";
    if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
    {
-      height -= (243 - atoi(var.value)); //magic
+      height -= (FB_HEIGHT - atoi(var.value)); //magic
    }
 #endif
 #if defined(WANT_32BPP)
@@ -1479,8 +1479,8 @@ void retro_set_environment(retro_environment_t cb)
    static const struct retro_variable vars[] = {
       { "pce_nospritelimit", "No Sprite Limit; disabled|enabled" },
 //      { "pce_keepaspect", "Keep Aspect; enabled|disabled" },
-      { "pce_scanlinestart", "Scanline Start; 11|12|13|14|15|16|0|1|2|3|4|5|6|7|8|9|10" },     
-      { "pce_scanlineend", "Scanline End; 233|234|235|236|237|238|239|240|241|242|224|225|226|227|228|229|230|231|232" },
+      { "pce_scanlinestart", "Scanline Start; 9|10|11|12|13|14|15|16|0|1|2|3|4|5|6|7|8" },     
+      { "pce_scanlineend", "Scanline End; 231|232|233|234|235|236|237|238|239|240|224|225|226|227|228|229|230" },
       { "pce_cddavolume", "(CD) CDDA Volume; 0|10|20|30|40|50|60|70|80|90|100" },
       { "pce_adpcmvolume", "(CD) ADPCM Volume; 0|10|20|30|40|50|60|70|80|90|100" },
       { "pce_cdpsgvolume", "(CD) CD PSG Volume; 0|10|20|30|40|50|60|70|80|90|100" },
