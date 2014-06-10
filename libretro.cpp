@@ -111,6 +111,8 @@ static bool is_pal = false;
 #define MEDNAFEN_CORE_GEOMETRY_ASPECT_RATIO (6.0 / 5.0)
 #define FB_WIDTH 682
 #define FB_HEIGHT 240
+static int scanline_start;
+static int scanline_end;
 
 #elif defined(WANT_WSWAN_EMU)
 #define MEDNAFEN_CORE_NAME_MODULE "wswan"
@@ -479,25 +481,22 @@ static void check_variables(void)
          setting_pce_fast_nospritelimit = 1;
    }
 
-//   var.key = "pce_keepaspect";
+   var.key = "pce_scanlinestart";
+   
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))   
+      scanline_start = atoi(var.value);
 
-//   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
-//   {
-//      if (strcmp(var.value, "disabled") == 0)
-//      {
-         setting_pce_keepaspect = 0;
-         game->fb_width = 682;
-         game->nominal_width = 341;
-         game->lcm_width = 341;
-//      }
-//      else if (strcmp(var.value, "enabled") == 0)
-//      {
-//         setting_pce_keepaspect = 1;
-//         game->fb_width = 682;
-//         game->nominal_width = 288;
-//         game->lcm_width = 1024;
-//      }
-//   }
+   var.key = "pce_scanlineend";
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
+      scanline_end = atoi(var.value); 
+
+   // removed the redundant "Keep Aspect" option; we control the ar)
+   // make Mednafen always output square pixels.
+   setting_pce_keepaspect = 0;
+   game->fb_width = FB_WIDTH;             //682
+   game->nominal_width = FB_WIDTH / 2;    //341
+   game->lcm_width = FB_WIDTH / 2;
 
    bool do_cdsettings = false;
    var.key = "pce_cddavolume";
@@ -1313,20 +1312,13 @@ void retro_run()
 #elif defined(WANT_16BPP)
    const uint16_t *pix = surf->pixels16;
 #endif
+
 #if defined(WANT_PCE_FAST_EMU)
-   struct retro_variable var = {0};
-   var.key = "pce_scanlinestart";
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
-   {
-      pix += (atoi(var.value) * surf->pitchinpix);
-      height -= atoi(var.value);
-   }
-   var.key = "pce_scanlineend";
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var))
-   {
-      height -= (FB_HEIGHT - atoi(var.value)); //magic
-   }
+   pix += (scanline_start * surf->pitchinpix);
+   height -= scanline_start;
+   height -= (FB_HEIGHT - scanline_end);
 #endif
+
 #if defined(WANT_32BPP)
     video_cb(pix, width, height, FB_WIDTH << 2);
 #elif defined(WANT_16BPP)
