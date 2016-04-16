@@ -1346,7 +1346,7 @@ void VDC_RunFrame(EmulateSpecStruct *espec, bool IsHES)
 
   if(frame_counter == 0)
   {
-   VDS = M_vdc_VDS - 3;
+   VDS = M_vdc_VDS;
    VSW = M_vdc_VSW;
    VDW = M_vdc_VDW;
    VCR = M_vdc_VCR;
@@ -1464,7 +1464,7 @@ void VDC_RunFrame(EmulateSpecStruct *espec, bool IsHES)
 
   HuC6280_Run(line_leadin1);
 
-  const bool fc_vrm = (frame_counter >= 14 && frame_counter < (14 + 242));
+  const bool fc_vrm = (frame_counter >= 14 && frame_counter < (14 + 242 + 1));
 
   for(int chip = 0; chip < VDC_TotalChips; chip++)
   {
