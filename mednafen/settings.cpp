@@ -83,7 +83,7 @@ uint64 MDFN_GetSettingUI(const char *name)
    if (!strcmp("pce_fast.slstart", name))
       return 0;
    if (!strcmp("pce_fast.slend", name))
-      return 239;
+      return 242;
 #elif defined(WANT_WSWAN_EMU)
    if (!strcmp("wswan.ocmultiplier", name))
       return 1;
